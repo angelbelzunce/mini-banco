@@ -24,9 +24,9 @@ public class Account {
     protected Account() {
     }
 
-    public Account(String holder, BigDecimal balance) {
+    public Account(String holder, BigDecimal initialBalance) {
         this.holder = holder;
-        this.balance = balance;
+        this.balance = initialBalance;
     }
 
     public Long getId() {

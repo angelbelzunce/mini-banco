@@ -1,0 +1,14 @@
+services:
+  cuentas-db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: cuentas_db
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - cuentas-data:/var/lib/postgresql/data
+
+volumes:
+  cuentas-data:

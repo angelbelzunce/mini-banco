@@ -1,6 +1,8 @@
 package com.minibanco.cuentas.account;
 
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +30,13 @@ public class AccountController {
 
         AccountResponse response = accountService.findById(id);
 
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<AccountResponse>> findAll(Pageable pageable) {
+
+        Page<AccountResponse> response = accountService.findAll(pageable);
         return ResponseEntity.ok(response);
     }
 }

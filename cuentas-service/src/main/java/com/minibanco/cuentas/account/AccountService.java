@@ -1,5 +1,7 @@
 package com.minibanco.cuentas.account;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,5 +28,12 @@ public class AccountService {
                 .orElseThrow(() -> new AccountNotFoundException(id));
 
         return AccountResponse.from(account);
+    }
+
+    // Metodo encargado de paginar una consulta
+    public Page<AccountResponse> findAll(Pageable pageable) {
+
+        return accountRepository.findAll(pageable)
+                .map(AccountResponse::from);
     }
 }

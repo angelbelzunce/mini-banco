@@ -60,7 +60,7 @@ public class TransferIntegrationTest {
     }
 
     @Test
-    void transfer_concurrentDebits_onlyOneSucceds() throws InterruptedException {
+    void transfer_concurrentDebits_onlyOneSucceeds() throws InterruptedException {
         Account ana = accountRepository.save(new Account("Ana", new BigDecimal("100.00")));
         Account luis = accountRepository.save(new Account("Luis", new BigDecimal("0.00")));
 

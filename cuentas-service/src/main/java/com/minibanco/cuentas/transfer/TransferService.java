@@ -3,6 +3,7 @@ package com.minibanco.cuentas.transfer;
 import com.minibanco.cuentas.account.Account;
 import com.minibanco.cuentas.account.AccountNotFoundException;
 import com.minibanco.cuentas.account.AccountRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,10 +38,15 @@ public class TransferService {
         target.credit(request.amount());
 
         // 4. Guardo la transferencia
-        Transfer transfer = new Transfer(request.sourceAccountId(), request.targetAccountId(), request.amount(),
-                idempotencyKey, LocalDateTime.now(), "COMPLETED");
+        Transfer transfer = new Transfer(request.sourceAccountId(), request.targetAccountId(), request.amount(), idempotencyKey, LocalDateTime.now(), "COMPLETED");
 
         return TransferResponse.from(transferRepository.save(transfer));
 
+    }
+
+    public TransferResponse findById(Long id) {
+        Transfer transfer = transferRepository.findById(id).orElseThrow(() -> new TransferNotFoundException(id));
+
+        return TransferResponse.from(transfer);
     }
 }

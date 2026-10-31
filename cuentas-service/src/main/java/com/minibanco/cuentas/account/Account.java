@@ -29,6 +29,17 @@ public class Account {
         this.balance = initialBalance;
     }
 
+    public void debit(BigDecimal amount){
+        if (balance.compareTo(amount) < 0){
+            throw new InsufficientFundsException(id);
+        }
+        balance = balance.subtract(amount);
+    }
+
+    public void credit(BigDecimal amount){
+        balance = balance.add(amount);
+    }
+
     public Long getId() {
         return id;
     }

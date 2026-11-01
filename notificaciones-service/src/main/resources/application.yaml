@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: notificaciones-service
+
+server:
+  port: 8081

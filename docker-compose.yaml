@@ -10,5 +10,17 @@ services:
     volumes:
       - cuentas-data:/var/lib/postgresql/data
 
+  cuentas-service:
+    build: ./cuentas-service
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://cuentas-db:5432/cuentas_db
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    depends_on:
+      - "cuentas-db"
+
 volumes:
   cuentas-data:

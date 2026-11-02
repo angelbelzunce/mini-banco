@@ -3,7 +3,8 @@ package com.minibanco.cuentas.transfer;
 import com.minibanco.cuentas.account.Account;
 import com.minibanco.cuentas.account.AccountNotFoundException;
 import com.minibanco.cuentas.account.AccountRepository;
-import org.springframework.http.ResponseEntity;
+import com.minibanco.cuentas.notification.NotificationClient;
+import com.minibanco.cuentas.notification.NotificationRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,10 +16,12 @@ public class TransferService {
 
     private final AccountRepository accountRepository;
     private final TransferRepository transferRepository;
+    private final NotificationClient notificationClient;
 
-    public TransferService(AccountRepository accountRepository, TransferRepository transferRepository) {
+    public TransferService(AccountRepository accountRepository, TransferRepository transferRepository, NotificationClient notificationClient) {
         this.accountRepository = accountRepository;
         this.transferRepository = transferRepository;
+        this.notificationClient = notificationClient;
     }
 
     @Transactional
@@ -40,7 +43,9 @@ public class TransferService {
         // 4. Guardo la transferencia
         Transfer transfer = new Transfer(request.sourceAccountId(), request.targetAccountId(), request.amount(), idempotencyKey, LocalDateTime.now(), "COMPLETED");
 
-        return TransferResponse.from(transferRepository.save(transfer));
+        TransferResponse saved = TransferResponse.from(transferRepository.save(transfer));
+        notificationClient.send(new NotificationRequest(saved.id(), "Transfer completed"));
+        return saved;
 
     }
 

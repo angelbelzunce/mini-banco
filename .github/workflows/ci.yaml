@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
+
+      - name: Build cuentas-service
+        run: mvn -B verify
+        working-directory: cuentas-service
+
+      - name: Build notificaciones-service
+        run: mvn -B verify
+        working-directory: notificaciones-service

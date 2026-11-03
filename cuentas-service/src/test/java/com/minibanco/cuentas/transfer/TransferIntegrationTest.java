@@ -3,6 +3,7 @@ package com.minibanco.cuentas.transfer;
 import com.minibanco.cuentas.TestcontainersConfiguration;
 import com.minibanco.cuentas.account.Account;
 import com.minibanco.cuentas.account.AccountRepository;
+import com.minibanco.cuentas.account.InsufficientFundsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ActiveProfiles("test")
 @Import(TestcontainersConfiguration.class)
@@ -103,4 +105,17 @@ public class TransferIntegrationTest {
         assertEquals(new BigDecimal("100.00"), accountRepository.findById(luis.getId()).get().getBalance());
     }
 
+    @Test
+    void transfer_whenBalanceDoesNotCoverCommission_throwsInsufficientFundsException() {
+        Account ana = accountRepository.save(new Account("Ana", new BigDecimal("100.00")));
+        Account luis = accountRepository.save(new Account("Luis", new BigDecimal("50.00")));
+
+        assertThrows(InsufficientFundsException.class,
+                () -> transferService.transfer("insufficient-funds-key",
+                        new CreateTransferRequest(ana.getId(), luis.getId(), new BigDecimal("100.00"), TransferType.EXTERNAL)));
+        assertEquals(new BigDecimal("100.00"), accountRepository.findById(ana.getId()).get().getBalance());
+        assertEquals(new BigDecimal("50.00"), accountRepository.findById(luis.getId()).get().getBalance());
+        assertEquals(0, transferRepository.count());
+
+    }
 }

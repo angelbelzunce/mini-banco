@@ -32,7 +32,7 @@ public class AccountServiceTest {
     }
 
     @Test
-    void findById_whenAccountExist_throwsException() {
+    void findById_whenAccountExists_returnsAccount() {
 
         // Creamos una cuenta para el test
         Account account = new Account("Ana", new BigDecimal("100.00"));

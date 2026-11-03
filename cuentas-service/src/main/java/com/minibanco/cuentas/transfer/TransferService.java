@@ -3,12 +3,15 @@ package com.minibanco.cuentas.transfer;
 import com.minibanco.cuentas.account.Account;
 import com.minibanco.cuentas.account.AccountNotFoundException;
 import com.minibanco.cuentas.account.AccountRepository;
+import com.minibanco.cuentas.commission.CommissionStrategy;
 import com.minibanco.cuentas.notification.NotificationClient;
 import com.minibanco.cuentas.notification.NotificationRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,11 +20,13 @@ public class TransferService {
     private final AccountRepository accountRepository;
     private final TransferRepository transferRepository;
     private final NotificationClient notificationClient;
+    private final List<CommissionStrategy> commissionStrategies;
 
-    public TransferService(AccountRepository accountRepository, TransferRepository transferRepository, NotificationClient notificationClient) {
+    public TransferService(AccountRepository accountRepository, TransferRepository transferRepository, NotificationClient notificationClient, List<CommissionStrategy> commissionStrategies) {
         this.accountRepository = accountRepository;
         this.transferRepository = transferRepository;
         this.notificationClient = notificationClient;
+        this.commissionStrategies = commissionStrategies;
     }
 
     @Transactional
@@ -36,8 +41,10 @@ public class TransferService {
 
         Account target = accountRepository.findById(request.targetAccountId()).orElseThrow(() -> new AccountNotFoundException(request.targetAccountId()));
 
+        BigDecimal commission = findStrategy(request.transferType()).calculate(request.amount());
+
         // 3. Muevo el dinero
-        source.debit(request.amount());
+        source.debit(request.amount().add(commission));
         target.credit(request.amount());
 
         // 4. Guardo la transferencia
@@ -53,5 +60,15 @@ public class TransferService {
         Transfer transfer = transferRepository.findById(id).orElseThrow(() -> new TransferNotFoundException(id));
 
         return TransferResponse.from(transfer);
+    }
+
+    private CommissionStrategy findStrategy(TransferType transferType) {
+
+        for (CommissionStrategy strategy : commissionStrategies) {
+            if (strategy.supports() == transferType) {
+                return strategy;
+            }
+        }
+        throw new IllegalStateException("No commission strategy for type " + transferType);
     }
 }

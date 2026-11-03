@@ -37,7 +37,7 @@ public class TransferIntegrationTest {
         Account ana = accountRepository.save(new Account("Ana", new BigDecimal("100.00")));
         Account luis = accountRepository.save(new Account("Luis", new BigDecimal("50.00")));
 
-        transferService.transfer("key-1", new CreateTransferRequest(ana.getId(), luis.getId(), new BigDecimal("30.00")));
+        transferService.transfer("key-1", new CreateTransferRequest(ana.getId(), luis.getId(), new BigDecimal("30.00"), TransferType.INTERNAL));
 
         assertEquals(new BigDecimal("70.00"), accountRepository.findById(ana.getId()).get().getBalance());
         assertEquals(new BigDecimal("80.00"), accountRepository.findById(luis.getId()).get().getBalance());
@@ -50,8 +50,8 @@ public class TransferIntegrationTest {
         Account luis = accountRepository.save(new Account("Luis", new BigDecimal("50.00")));
 
 
-        transferService.transfer("same-key", new CreateTransferRequest(ana.getId(), luis.getId(), new BigDecimal("30.00")));
-        transferService.transfer("same-key", new CreateTransferRequest(ana.getId(), luis.getId(), new BigDecimal("30.00")));
+        transferService.transfer("same-key", new CreateTransferRequest(ana.getId(), luis.getId(), new BigDecimal("30.00"), TransferType.INTERNAL));
+        transferService.transfer("same-key", new CreateTransferRequest(ana.getId(), luis.getId(), new BigDecimal("30.00"), TransferType.INTERNAL));
 
 
         assertEquals(1, transferRepository.count());
@@ -67,7 +67,7 @@ public class TransferIntegrationTest {
 
         Thread t1 = new Thread(() -> {
             try {
-                transferService.transfer("key-1", new CreateTransferRequest(ana.getId(), luis.getId(), new BigDecimal("60.00")));
+                transferService.transfer("key-1", new CreateTransferRequest(ana.getId(), luis.getId(), new BigDecimal("60.00"), TransferType.INTERNAL));
             } catch (Exception e) {
                 // esperado: uno de los dos hilos falla
             }
@@ -75,7 +75,7 @@ public class TransferIntegrationTest {
 
         Thread t2 = new Thread(() -> {
             try {
-                transferService.transfer("key-2", new CreateTransferRequest(ana.getId(), luis.getId(), new BigDecimal("60.00")));
+                transferService.transfer("key-2", new CreateTransferRequest(ana.getId(), luis.getId(), new BigDecimal("60.00"), TransferType.INTERNAL));
             } catch (Exception e) {
                 // esperado: uno de los dos hilos falla
             }

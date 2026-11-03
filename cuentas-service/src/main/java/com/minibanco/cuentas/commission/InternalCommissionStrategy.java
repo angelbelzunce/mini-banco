@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 @Component
 public class InternalCommissionStrategy implements CommissionStrategy {
 
-    private final static BigDecimal ZERO_COMMISSION = new BigDecimal("0.00");
+    private static final BigDecimal ZERO_COMMISSION = new BigDecimal("0.00");
 
     @Override
     public BigDecimal calculate(BigDecimal amount) {

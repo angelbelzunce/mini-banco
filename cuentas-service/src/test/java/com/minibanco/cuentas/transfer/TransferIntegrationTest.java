@@ -91,4 +91,16 @@ public class TransferIntegrationTest {
         assertEquals(new BigDecimal("40.00"), accountRepository.findById(ana.getId()).get().getBalance());
     }
 
+    @Test
+    void transfer_whenExternal_debitsAmountPlusCommission() {
+
+        Account ana = accountRepository.save(new Account("Ana", new BigDecimal("100.00")));
+        Account luis = accountRepository.save(new Account("Luis", new BigDecimal("50.00")));
+
+        transferService.transfer("external-key", new CreateTransferRequest(ana.getId(), luis.getId(), new BigDecimal("50.00"), TransferType.EXTERNAL));
+
+        assertEquals(new BigDecimal("49.50"), accountRepository.findById(ana.getId()).get().getBalance());
+        assertEquals(new BigDecimal("100.00"), accountRepository.findById(luis.getId()).get().getBalance());
+    }
+
 }

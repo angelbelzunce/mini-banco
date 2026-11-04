@@ -38,7 +38,7 @@ public class AccountControllerTest {
 
         mockMvc.perform(post("/api/cuentas")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"holder\":\"\",\"initialBalance\":100.00})"))
+                .content("{\"holder\":\"\",\"initialBalance\":100.00}"))
                 .andExpect(status().isBadRequest());
 
     }

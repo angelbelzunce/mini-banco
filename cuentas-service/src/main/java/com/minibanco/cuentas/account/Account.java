@@ -37,6 +37,9 @@ public class Account {
     }
 
     public void credit(BigDecimal amount){
+        if (amount.compareTo(new BigDecimal("0.00")) <= 0){
+            throw new IllegalArgumentException("Amount must be positive");
+        }
         balance = balance.add(amount);
     }
 

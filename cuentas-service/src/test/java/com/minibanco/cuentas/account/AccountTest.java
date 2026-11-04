@@ -24,4 +24,31 @@ public class AccountTest {
 
         assertThrows(InsufficientFundsException.class, () -> ana.debit(new BigDecimal("150.00")));
     }
+
+    @Test
+    void debit_whenAmountEqualsBalance_leavesZeroBalance(){
+        Account ana = new Account("Ana", new BigDecimal("100.00"));
+
+        ana.debit(new BigDecimal("100.00"));
+
+        assertEquals(new BigDecimal("0.00"), ana.getBalance());
+
+    }
+
+    @Test
+    void credit_whenAmountIsNegative_throwsIllegalArgumentException(){
+        Account ana = new Account("Ana", new BigDecimal("100.00"));
+
+        assertThrows(IllegalArgumentException.class, () -> ana.credit(new BigDecimal("-50.00")));
+
+    }
+
+    @Test
+    void credit_whenAmountIsPositive_addsAmount(){
+        Account ana = new Account("Ana", new BigDecimal("100.00"));
+
+        ana.credit(new BigDecimal("50.00"));
+
+        assertEquals(new BigDecimal("150.00"), ana.getBalance());
+    }
 }

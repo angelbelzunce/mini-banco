@@ -49,6 +49,17 @@ public class AccountServiceTest {
     }
 
     @Test
+    void findById_whenAccountExists_returnsBalance(){
+        Account account = new Account("Ana", new BigDecimal("100.00"));
+
+        when(accountRepository.findById(1L)).thenReturn(Optional.of(account));
+
+        AccountResponse response = accountService.findById(1L);
+
+        assertEquals(new BigDecimal("100.00"), response.balance());
+    }
+
+    @Test
     void create_savesAccountAndReturnsResponse() {
         // Creamos una petición de creación de cuenta
         CreateAccountRequest request = new CreateAccountRequest("Ana", new BigDecimal("100.00"));

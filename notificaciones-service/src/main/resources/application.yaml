@@ -1,6 +1,11 @@
 spring:
   application:
     name: notificaciones-service
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: notificaciones
+      auto-offset-reset: earliest
 
 server:
   port: 8081

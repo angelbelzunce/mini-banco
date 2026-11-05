@@ -19,7 +19,7 @@ public class TransferEventPublisher {
     public void publish(Long transferId) {
 
         try {
-            kafkaTemplate.send(TOPIC, "Transfer " + transferId + " completed");
+            kafkaTemplate.send(TOPIC, String.valueOf(transferId));
 
         } catch (Exception e) {
             log.warn("Could not publish event for transfer " + transferId);

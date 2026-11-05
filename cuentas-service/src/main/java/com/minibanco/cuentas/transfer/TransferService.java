@@ -4,6 +4,7 @@ import com.minibanco.cuentas.account.Account;
 import com.minibanco.cuentas.account.AccountNotFoundException;
 import com.minibanco.cuentas.account.AccountRepository;
 import com.minibanco.cuentas.commission.CommissionStrategy;
+import com.minibanco.cuentas.event.TransferEventPublisher;
 import com.minibanco.cuentas.notification.NotificationClient;
 import com.minibanco.cuentas.notification.NotificationRequest;
 import org.springframework.stereotype.Service;
@@ -21,12 +22,14 @@ public class TransferService {
     private final TransferRepository transferRepository;
     private final NotificationClient notificationClient;
     private final List<CommissionStrategy> commissionStrategies;
+    private final TransferEventPublisher transferEventPublisher;
 
-    public TransferService(AccountRepository accountRepository, TransferRepository transferRepository, NotificationClient notificationClient, List<CommissionStrategy> commissionStrategies) {
+    public TransferService(AccountRepository accountRepository, TransferRepository transferRepository, NotificationClient notificationClient, List<CommissionStrategy> commissionStrategies, TransferEventPublisher transferEventPublisher) {
         this.accountRepository = accountRepository;
         this.transferRepository = transferRepository;
         this.notificationClient = notificationClient;
         this.commissionStrategies = commissionStrategies;
+        this.transferEventPublisher = transferEventPublisher;
     }
 
     @Transactional
@@ -52,6 +55,7 @@ public class TransferService {
 
         TransferResponse saved = TransferResponse.from(transferRepository.save(transfer));
         notificationClient.send(new NotificationRequest(saved.id(), "Transfer completed"));
+        transferEventPublisher.publish(saved.id());
         return saved;
 
     }

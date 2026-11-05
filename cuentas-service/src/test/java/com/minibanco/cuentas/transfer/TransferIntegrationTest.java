@@ -4,12 +4,14 @@ import com.minibanco.cuentas.TestcontainersConfiguration;
 import com.minibanco.cuentas.account.Account;
 import com.minibanco.cuentas.account.AccountRepository;
 import com.minibanco.cuentas.account.InsufficientFundsException;
+import com.minibanco.cuentas.event.TransferEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.math.BigDecimal;
 
@@ -20,6 +22,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Import(TestcontainersConfiguration.class)
 @SpringBootTest
 public class TransferIntegrationTest {
+
+    @MockitoBean
+    TransferEventPublisher transferEventPublisher;
 
     @Autowired
     TransferService transferService;

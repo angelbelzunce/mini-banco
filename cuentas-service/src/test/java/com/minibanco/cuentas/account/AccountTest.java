@@ -44,6 +44,13 @@ public class AccountTest {
     }
 
     @Test
+    void credit_whenAmountIsZero_throwsIllegalArgumentException(){
+        Account ana = new Account("Ana", new BigDecimal("100.00"));
+
+        assertThrows(IllegalArgumentException.class, () -> ana.credit(new BigDecimal("0.00")));
+    }
+
+    @Test
     void credit_whenAmountIsPositive_addsAmount(){
         Account ana = new Account("Ana", new BigDecimal("100.00"));
 

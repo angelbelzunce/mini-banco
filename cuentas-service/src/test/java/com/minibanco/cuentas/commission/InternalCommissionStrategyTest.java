@@ -1,5 +1,6 @@
 package com.minibanco.cuentas.commission;
 
+import com.minibanco.cuentas.transfer.TransferType;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -18,5 +19,12 @@ class InternalCommissionStrategyTest {
 
         assertEquals(new BigDecimal("0.00"), commission);
 
+    }
+
+    @Test
+    void supports_returnsInternal(){
+        InternalCommissionStrategy internalCommissionStrategy = new InternalCommissionStrategy();
+
+        assertEquals(TransferType.INTERNAL, internalCommissionStrategy.supports());
     }
 }

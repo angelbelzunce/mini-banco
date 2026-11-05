@@ -19,7 +19,6 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://cuentas-db:5432/cuentas_db
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      NOTIFICATIONS_BASE_URL: http://notificaciones-service:8081
     depends_on:
       - "cuentas-db"
 
